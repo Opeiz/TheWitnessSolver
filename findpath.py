@@ -4,8 +4,8 @@ from collections import deque
 
 def find_path(grid_mask, start_point, end_point):
     height, width = grid_mask.shape
-    start_tuple = tuple(start_point)
-    end_tuple = tuple(end_point)
+    start_tuple = start_point
+    end_tuple = end_point
 
     if not (0 <= start_tuple[1] < height and 0 <= start_tuple[0] < width and grid_mask[start_tuple[1], start_tuple[0]] == 255) or \
        not (0 <= end_tuple[1] < height and 0 <= end_tuple[0] < width and grid_mask[end_tuple[1], end_tuple[0]] == 255):
@@ -51,7 +51,7 @@ def visualize_solution(original_image, solution_path_nodes, graph, path_color=(2
             for pixel in path_pixels:
                 cv2.circle(solved_image, pixel, 1, path_color, -1)
 
-        cv2.circle(solved_image, start_node, 20, (0, 255, 255), -1)  # Mark start
-        cv2.circle(solved_image, end_node, 20, (255, 255, 0), -1)    # Mark end
+        cv2.circle(solved_image, start_node, 10, (0, 255, 255), -1)  # Mark start
+        cv2.circle(solved_image, end_node, 10, (255, 255, 0), -1)    # Mark end
 
     return solved_image

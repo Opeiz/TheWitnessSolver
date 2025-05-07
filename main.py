@@ -1,8 +1,9 @@
 import cv2
 import numpy as np
-from utils import *
 import os
 import random
+
+from utils import *
 from findpath import *
 from grid_extract import *
 
@@ -40,12 +41,8 @@ if __name__ == "__main__":
 
     processed_image = quantize_colors_kmeans(processed_image, 2)
     # display_image("Quantized Image", processed_image)
-
-    # Find the start point
-    template_folder = "C:\\Users\\jaopa\\Documents\\TheWitnessSolver\\Template"
-    template_files = [os.path.join(template_folder, f) for f in os.listdir(template_folder) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
     
-    start_point = detect_start_points_multiple_templates(processed_image, template_files)
+    start_point = detect_start_point_manual(processed_image)
     end_point = detect_end_point_manual(processed_image)
     # display_image("Start Point", processed_image)
 

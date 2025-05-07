@@ -47,3 +47,7 @@ Here's a breakdown of the logic behind each puzzle type:
 1.  Clone the repository: `git clone https://github.com/Opeiz/TheWitnessSolver.git`
 <!-- 2.  Install the required dependencies: `pip install -r requirements.txt`
 3.  Run the solver: `python solve.py <puzzle_image>` -->
+
+## Sumamry of Features
+
+1. For the moment i dont want to apply any AI solution, so the detection of the Start point and the End point it's clicked by the user. Its basic, i know, but works

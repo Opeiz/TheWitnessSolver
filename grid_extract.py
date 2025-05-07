@@ -1,24 +1,30 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+
 from collections import Counter
 from utils import *
 
 def apply_perspective_transform_with_manual_corners(image):
     """Allows the user to manually select 4 corners of the image and applies a perspective transform."""
+
+    windows_name = "Select Corners"
+
     def click_event(event, x, y, flags, param):
         if event == cv2.EVENT_LBUTTONDOWN:
             points.append((x, y))
             cv2.circle(temp_image, (x, y), 5, (0, 0, 255), -1)
-            cv2.imshow("Select Corners", temp_image)
+            cv2.imshow(windows_name, temp_image)
 
             if len(points) == 4:
-                cv2.destroyWindow("Select Corners")
+                cv2.destroyWindow(windows_name)
 
     points = []
     temp_image = image.copy()
-    cv2.imshow("Select Corners", temp_image)
-    cv2.setMouseCallback("Select Corners", click_event)
+    cv2.namedWindow(windows_name)
+    cv2.moveWindow(windows_name, 100, 100)
+    cv2.imshow(windows_name, temp_image)
+    cv2.setMouseCallback(windows_name, click_event)
     cv2.waitKey(0)
 
     if len(points) != 4:
@@ -94,91 +100,51 @@ def extract_grid(image, center_x, center_y):
 
     return grid_mask
 
-def detect_start_points_multiple_templates(image, template_paths):
-    """
-    Detects potential start points in the puzzle image using multiple templates.
+def detect_start_point_manual(image):
 
-    Args:
-        image (numpy.ndarray): The input puzzle image (BGR format).
-        template_paths (list): A list of paths to template images of the start points.
+    windows_name = "Click Start Point"
 
-    Returns:
-        list: A list of (x, y) coordinates of the centers of the detected start points.
-              Returns an empty list if no start points are found above the threshold.
-    """
-    if image is None:
-        print("Error: Input puzzle image is None.")
-        return []
-
-    detected_centers = []
-
-    try:
-        image_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-        for template_path in template_paths:
-            template = cv2.imread(template_path)
-            if template is None:
-                print(f"Error: Could not load template image at {template_path}")
-                continue
-
-            template_gray = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
-            template_height, template_width = template_gray.shape[::-1]
-
-            # Apply template matching
-            res = cv2.matchTemplate(image_gray, template_gray, cv2.TM_CCOEFF_NORMED)
-            min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
-
-            # You can set a threshold to only consider strong matches
-            threshold = 0.7  # Adjust this value
-
-            if max_val >= threshold:
-                # Get the top-left corner of the matched region
-                top_left = max_loc
-                bottom_right = (top_left[0] + template_width, top_left[1] + template_height)
-
-                # Calculate the center of the matched region
-                center_x = int((top_left[0] + bottom_right[0]) / 2)
-                center_y = int((top_left[1] + bottom_right[1]) / 2)
-
-                detected_centers.append((center_x, center_y))
-
-        # Remove duplicate detections if any (e.g., if templates are very similar and overlap)
-        unique_centers = list(set(detected_centers))
-        print(f"Detected {len(unique_centers)} start points.")
-
-        for center in unique_centers:
-            cv2.circle(image, center, 5, (0, 255, 0), -1)
-
-        display_image("Detected Start Points", image)
-        return unique_centers
-
-    except Exception as e:
-        print(f"An error occurred during template matching: {e}")
-        return []
-
-def detect_end_point_manual(image):
-    """
-    Allows the user to manually click on the end point in the puzzle image.
-
-    Args:
-        image (numpy.ndarray): The input puzzle image (BGR format).
-
-    Returns:
-        tuple or None: The (x, y) coordinates of the clicked end point,
-                       or None if no point is clicked.
-    """
     def click_event(event, x, y, flags, param):
         nonlocal end_point
         if event == cv2.EVENT_LBUTTONDOWN:
             end_point = (x, y)
             cv2.circle(temp_image, (x, y), 5, (0, 0, 255), -1)
-            cv2.imshow("Click End Point", temp_image)
-            cv2.destroyWindow("Click End Point")
+            cv2.imshow(windows_name, temp_image)
+            cv2.destroyWindow(windows_name)
 
     end_point = None
     temp_image = image.copy()
-    cv2.imshow("Click End Point", temp_image)
-    cv2.setMouseCallback("Click End Point", click_event)
+    cv2.namedWindow(windows_name)
+    cv2.moveWindow(windows_name, 100, 100)
+    cv2.imshow(windows_name, temp_image)
+    cv2.setMouseCallback(windows_name, click_event)
+    cv2.waitKey(0)
+
+    if end_point is None:
+        print("Error: No point was clicked.")
+    else:
+        print(f"End point coordinates: {end_point}")
+
+    return end_point
+
+def detect_end_point_manual(image):
+
+    windows_name = "Click End Point"
+
+    def click_event(event, x, y, flags, param):
+        nonlocal end_point
+        if event == cv2.EVENT_LBUTTONDOWN:
+            end_point = (x, y)
+            cv2.circle(temp_image, (x, y), 5, (0, 0, 255), -1)
+            cv2.imshow(windows_name, temp_image)
+            cv2.destroyWindow(windows_name)
+
+    end_point = None
+    temp_image = image.copy()
+    cv2.namedWindow(windows_name)
+    cv2.moveWindow(windows_name, 100, 100)
+    cv2.imshow(windows_name, temp_image)
+    cv2.setMouseCallback(windows_name, click_event)
     cv2.waitKey(0)
 
     if end_point is None:
