@@ -1,0 +1,13 @@
+# Ignore all .log files
+*.log
+
+# Ignore node_modules folder
+Solved/
+Solved_Mask/
+Unsolved/
+Test/
+img/
+Predictions/
+
+# Ignore specific file
+rename.py
